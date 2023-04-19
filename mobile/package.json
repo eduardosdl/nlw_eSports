@@ -33,5 +33,8 @@
     "prettier": "^2.8.7",
     "typescript": "^4.9.4"
   },
-  "private": true
+  "private": true,
+  "overrides": {
+    "xml2js": "^0.5.0"
+  }
 }
