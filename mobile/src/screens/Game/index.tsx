@@ -1,4 +1,5 @@
-import { Image, TouchableOpacity, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import { FlatList, Image, Text, TouchableOpacity, View } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -8,13 +9,14 @@ import { logoImg } from '../../assets/logo-nlw-esports.png';
 import { GameParams } from '../../@types/navigation';
 import { Background } from '../../componenets/background';
 import { Heading } from '../../componenets/Heading';
-import { DuoCard } from '../../componenets/DuoCard';
+import { DuoCard, DuoCardProps } from '../../componenets/DuoCard';
 
 import { styles } from './styles';
 import { THEME } from '../../theme';
-import { useEffect } from 'react';
 
 export function Game() {
+  const [duos, setDuos] = useState<DuoCardProps[]>([]);
+
   const navigation = useNavigation();
   const route = useRoute();
   const game = route.params as GameParams;
@@ -24,9 +26,9 @@ export function Game() {
   }
 
   useEffect(() => {
-    fetch('http://192.168.1.8:3000/games')
+    fetch(`http://192.168.1.8:3000/games/${game.id}/ads`)
       .then((res) => res.json())
-      .then((data) => setGames(data))
+      .then((data) => setDuos(data))
       .catch((err) => console.log('Error: ', err));
   }, []);
 
@@ -55,7 +57,24 @@ export function Game() {
 
         <Heading title={game.title} subtitle="Conecte-se e comece a jogar" />
 
-        <DuoCard />
+        <FlatList
+          style={styles.containerList}
+          contentContainerStyle={
+            duos.length === 0 ? styles.emptyListContent : styles.contentList
+          }
+          data={duos}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <DuoCard data={item} onConnect={() => console.log('ok')} />
+          )}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          ListEmptyComponent={() => (
+            <Text style={styles.emptyListText}>
+              Não há anúncios publicados ainda
+            </Text>
+          )}
+        />
       </SafeAreaView>
     </Background>
   );
