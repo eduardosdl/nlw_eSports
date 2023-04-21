@@ -14,6 +14,7 @@ interface Game {
 export function CreateAdModal() {
   const [games, setGames] = useState<Game[]>([]);
   const [weekDays, setWeekDays] = useState<string[]>([]);
+  const [useVoiceChannel, setUseVoiceChannel] = useState(false);
 
   useEffect(() => {
     fetch('http://localhost:3000/games')
@@ -30,6 +31,7 @@ export function CreateAdModal() {
 
     console.log(data);
     console.log(weekDays);
+    console.log(useVoiceChannel);
   }
 
   return (
@@ -193,7 +195,13 @@ export function CreateAdModal() {
           </div>
 
           <label className="mt-2 flex items-center gap-2 text-sm hover:cursor-pointer">
-            <Checkbox.Root className="w-6 h-6 p-1 rounded bg-zinc-900">
+            <Checkbox.Root
+              className="w-6 h-6 p-1 rounded bg-zinc-900"
+              checked={useVoiceChannel}
+              onCheckedChange={(checked) => {
+                checked ? setUseVoiceChannel(true) : setUseVoiceChannel(false);
+              }}
+            >
               <Checkbox.Indicator>
                 <Check className="w-4 h-4 text-emerald-400" />
               </Checkbox.Indicator>
